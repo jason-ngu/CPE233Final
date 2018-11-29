@@ -21,6 +21,8 @@ begin
 
 current_din <= DIN;
 
+DIR <= current_din(7);
+
 reg: process(CLK)
 begin
     if rising_edge(CLK) then
@@ -52,6 +54,16 @@ begin
         end if;
     end if;
 end process;
+
+set_out: process(enable,CLK)
+begin
+    if enable = '1' then
+        STEP <= CLK;
+    else
+        STEP <= '0';
+    end if;
+end process;
+
 
 
 end Behavioral;

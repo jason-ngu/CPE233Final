@@ -24,7 +24,7 @@ begin
       clk_2Hz_i   <= '0';
       prescaler   <= (others => '0');
     elsif rising_edge(clk_50Mhz) then   -- rising clock edge
-      if prescaler = X"BEBC20" then     -- 12 500 000 in hex
+      if prescaler = X"1312D0" then     -- 12 500 000 in hex
         prescaler   <= (others => '0');
         clk_2Hz_i   <= not clk_2Hz_i;
       else

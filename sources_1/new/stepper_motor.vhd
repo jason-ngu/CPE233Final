@@ -21,17 +21,17 @@ component scale_clock is
 end component scale_clock;
 
 signal clk_sig : std_logic;
-signal prev_din : std_logic_vector (7 downto 0);
-signal current_din : std_logic_vector ( 7 downto 0);
+signal prev_din : std_logic_vector (6 downto 0);
+signal current_din : std_logic_vector ( 6 downto 0);
 signal data_changed : std_logic;
 signal enable : std_logic;
 signal count : integer := 0;
 
 begin
 
-current_din <= DIN;
+current_din <= DIN(6 downto 0);
 
-DIR <= current_din(7);
+DIR <= DIN(7);
 
 data_changed_debug <= data_changed;
 enable_debug <= enable;

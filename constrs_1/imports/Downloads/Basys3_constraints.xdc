@@ -44,10 +44,10 @@ set_property PACKAGE_PIN W13 [get_ports {DIN[7]}]
  
 
 ## LEDs
-set_property PACKAGE_PIN U16 [get_ports {data_changed_debug}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {data_changed_debug}]
-set_property PACKAGE_PIN E19 [get_ports {enable_debug}]					
-	set_property IOSTANDARD LVCMOS33 [get_ports {enable_debug}]
+#set_property PACKAGE_PIN U16 [get_ports {data_changed_debug}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {data_changed_debug}]
+#set_property PACKAGE_PIN E19 [get_ports {enable_debug}]					
+#	set_property IOSTANDARD LVCMOS33 [get_ports {enable_debug}]
 #set_property PACKAGE_PIN U19 [get_ports {LEDS[2]}]					
 #	set_property IOSTANDARD LVCMOS33 [get_ports {LEDS[2]}]
 #set_property PACKAGE_PIN V19 [get_ports {LEDS[3]}]					

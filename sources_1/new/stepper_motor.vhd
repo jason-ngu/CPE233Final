@@ -6,9 +6,7 @@ entity stepper_motor is
   Port ( DIN : in std_logic_vector(7 downto 0);
          CLK : in std_logic;
          STEP : out std_logic;
-         DIR : out std_logic;
-         data_changed_debug : out std_logic;
-         enable_debug : out std_logic);
+         DIR : out std_logic);
 end stepper_motor;
 
 architecture Behavioral of stepper_motor is
@@ -32,9 +30,6 @@ begin
 current_din <= DIN(6 downto 0);
 
 DIR <= DIN(7);
-
-data_changed_debug <= data_changed;
-enable_debug <= enable;
 
 reg: process(clk_sig)
 begin

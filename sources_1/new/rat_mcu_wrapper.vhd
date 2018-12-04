@@ -8,18 +8,27 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity rat_mcu_wrapper is
     Port ( SWITCHES : in STD_LOGIC_VECTOR (7 downto 0);
-           PMOD : in STD_LOGIC_VECTOR (7 downto 0);
+           --PMOD : in STD_LOGIC_VECTOR (7 downto 0);
            BTNR : in STD_LOGIC;
            BTNL : in STD_LOGIC;
            CLK : in STD_LOGIC;
            LEDS : out STD_LOGIC_VECTOR (15 downto 0);
            ANODES : out STD_LOGIC_VECTOR (3 downto 0);
-           CATHODES : out STD_LOGIC_VECTOR (7 downto 0)
+           CATHODES : out STD_LOGIC_VECTOR (7 downto 0);
+           STEPPER1 : out STD_LOGIC_VECTOR(1 downto 0);
+           STEPPER2 : out STD_LOGIC_VECTOR(1 downto 0)
            );
 end rat_mcu_wrapper;
 
 
 architecture Behavioral of rat_mcu_wrapper is
+
+component stepper_motor is
+  Port ( DIN : in std_logic_vector(7 downto 0);
+         CLK : in std_logic;
+         STEP : out std_logic;
+         DIR : out std_logic);
+end component stepper_motor;
 
 component sseg_dec is
     Port (     ALU_VAL : in std_logic_vector(7 downto 0); 
@@ -53,6 +62,8 @@ signal D_sig : std_logic_vector (7 downto 0);
 signal OPEN_sig : std_logic_vector (7 downto 0);
 signal SSEG_sig : std_logic_vector (7 downto 0);
 signal INT_sig : std_logic;
+signal DIN1_sig : std_logic_vector(7 downto 0);
+signal DIN2_sig : std_logic_vector(7 downto 0);
 
 begin
 
@@ -68,11 +79,11 @@ internal : rat_mcu port map(INT => INT_sig,
                             OUT_PORT => OUT_PORT_sig,
                             PORT_ID => PORT_ID_sig);
 
-mux: process(PORT_ID_sig, PMOD, SWITCHES)
+mux: process(PORT_ID_sig, SWITCHES)
 begin
     case(PORT_ID_sig) is 
         when ("11111111") => IN_PORT_sig <= SWITCHES;
-        when ("00000001") => IN_PORT_sig <= PMOD;
+        --when ("00000001") => IN_PORT_sig <= PMOD;
         when others => IN_PORT_sig <= SWITCHES;
     end case;
 end process mux;
@@ -83,9 +94,11 @@ begin
     if rising_edge(CLK_sig) then
         if IO_STRB_sig = '1' then
             case(PORT_ID_sig) is 
-                when ("10000001") => SSEG_sig <= OUT_PORT_sig;
-                when ("00000010") => LEDS(7 downto 0) <= OUT_PORT_sig;
-                when others => LEDS(7 downto 0) <= OUT_PORT_sig;
+                when ("00000000") => SSEG_sig <= OUT_PORT_sig;
+                when ("00000001") => LEDS(7 downto 0) <= OUT_PORT_sig;
+                when ("00000010") => DIN1_sig <= OUT_PORT_sig;
+                when ("00000011") => DIN2_sig <= OUT_PORT_sig;
+                when others => SSEG_sig <= OUT_PORT_sig;
             end case;
         end if;
     end if;
@@ -97,6 +110,16 @@ clk_div: process(CLK) begin
         CLK_sig <= not(CLK_sig);
     end if;
 end process;
+                                                            
+stepper_motor_vert : stepper_motor port map(DIN => DIN1_sig,     
+                                            CLK => CLK_sig,      
+                                            STEP => STEPPER1(1), 
+                                            DIR => STEPPER1(0)); 
+                                                                 
+stepper_motor_hori : stepper_motor port map(DIN => DIN2_sig,     
+                                            CLK => CLK_sig,      
+                                            STEP => STEPPER2(1), 
+                                            DIR => STEPPER2(0)); 
 
 segment: sseg_dec port map(
                             ALU_VAL     =>  SSEG_sig,
